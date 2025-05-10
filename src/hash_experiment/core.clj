@@ -5,11 +5,6 @@
    [hash-experiment.logic.double-hashing :as logic.double-hashing]
    [hash-experiment.logic.explicit-chaining :as logic.explicit-chaining]))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
-
 (def test-table (vec (repeat 11 '())))
 (def test-table-2 (vec (repeat 11 nil)))
 (def test-table-3 (logic.computed-chaining/create-table 11))

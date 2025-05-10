@@ -20,8 +20,8 @@
         (> attempts max-attempts)
         (throw (Exception. "Tabela hash cheia"))
 
-        (empty? (nth tb current-index))
-        (assoc tb current-index (conj (nth tb current-index) k))
+        (nil? (nth tb current-index))
+        (assoc tb current-index k)
 
         :else
         (recur (mod (+ current-index jump) m)
