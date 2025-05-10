@@ -5,9 +5,10 @@
   (mod k m))
 
 (defn insert 
-  [hash-map k m]
-  (let [index (hashing k m)
-        bucket (nth hash-map index)
+  [table k]
+  (let [m              (count table)
+        index          (hashing k m)
+        bucket         (nth table index)
         updated-bucket (conj bucket (list k))]
-    (assoc hash-map index updated-bucket)))
+    (assoc table index updated-bucket)))
 
