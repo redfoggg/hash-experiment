@@ -8,18 +8,23 @@
   [k m]
   (mod (max 1 (quot k m)) m))
 
-(defn insert [hash-map k m]
-  (let [index          (hashing k m)
-        bucket         (nth hash-map index)
-        jump           (hashing-2 k m)]
-    (if (not (seq bucket))
-      (assoc hash-map index (conj bucket (list k)))
-      (assoc hash-map
-             (+ index jump)
-             (conj (nth hash-map (+ index jump)) (list k)))))) ; TODO: Double hashing tem que ser testado até que haja espaço
+(defn insert [table k]
+  (let [m            (count table)
+        index        (hashing k m)
+        jump         (hashing-2 k m)
+        max-attempts m]
+    (loop [current-index index
+           attempts      1
+           tb            table]
+      (cond
+        (> attempts max-attempts)
+        (throw (Exception. "Tabela hash cheia"))
 
-(hashing 16 11)
-(hashing-2 16 11)
+        (empty? (nth tb current-index))
+        (assoc tb current-index (conj (nth tb current-index) k))
 
-(max 1 (quot 16 11))
+        :else
+        (recur (mod (+ current-index jump) m)
+               (inc attempts)
+               tb)))))
 
