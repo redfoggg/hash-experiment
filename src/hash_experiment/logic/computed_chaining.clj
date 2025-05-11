@@ -8,9 +8,8 @@
   [k m]
   (mod k m))
 
-(defn hashing-2
-  [k m]
-  (mod (max 1 (quot k m)) m))
+(defn hashing-2 [k m]
+  (inc (mod k (- m 1))))
 
 (defn insert
   [table k]

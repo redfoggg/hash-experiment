@@ -15,10 +15,10 @@
         jump         (hashing-2 k m)
         max-attempts m]
     (loop [current-index index
-           attempts      1
+           accesses      1
            tb            table]
       (cond
-        (> attempts max-attempts)
+        (> accesses max-attempts)
         (throw (Exception. "Tabela hash cheia"))
 
         (nil? (nth tb current-index))
@@ -26,7 +26,7 @@
 
         :else
         (recur (mod (+ current-index jump) m)
-               (inc attempts)
+               (inc accesses)
                tb)))))
 
 (defn search
@@ -36,18 +36,18 @@
         jump         (hashing-2 k m)
         max-attempts m]
     (loop [current-index initial-idx
-           attempts      1]
+           accesses      1]
       (cond
-        (> attempts max-attempts)
-        nil
+        (> accesses max-attempts)
+        {:accesses accesses :value nil}
 
         (nil? (nth table current-index))
-        nil
+        {:accesses accesses :value nil}
 
         (= (nth table current-index) k)
-        k
+        {:accesses accesses :value k}
 
         :else
         (recur (mod (+ current-index jump) m)
-               (inc attempts))))))
+               (inc accesses))))))
 

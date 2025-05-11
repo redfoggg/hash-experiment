@@ -17,9 +17,11 @@
   (let [m      (count table)
         index  (hashing k m)
         bucket (nth table index)]
-    (loop [items bucket]
-      (when-let [item (first items)]
+    (loop [items bucket
+           accesses 1]
+      (if-let [item (first items)]
         (if (= item k)
-          item
-          (recur (rest items)))))))
+          {:accesses accesses :value item}
+          (recur (rest items) (inc accesses)))
+        {:accesses accesses :value nil}))))
 
