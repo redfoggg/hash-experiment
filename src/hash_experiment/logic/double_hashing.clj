@@ -51,3 +51,6 @@
         (recur (mod (+ current-index jump) m)
                (inc accesses))))))
 
+(defn create-table
+  [m]
+  (vec (repeat m nil)))

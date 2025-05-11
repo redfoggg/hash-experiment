@@ -25,3 +25,6 @@
           (recur (rest items) (inc accesses)))
         {:accesses accesses :value nil}))))
 
+(defn create-table
+  [m]
+  (vec (repeat m '())))
