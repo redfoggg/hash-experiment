@@ -15,7 +15,7 @@
   [27 18 29 43 77 13 16 40])
 
 (def explicit-chaining-expected-result
-  ['((77)) '() '((13)) '() '() '((16) (27)) '() '((40) (29) (18)) '() '() '((43))])
+  ['(77) '() '(13) '() '() '(16 27) '() '(40 29 18) '() '() '(43)])
 
 (deftest double-hashing-bulk-test
   (let [empty-table (vec (repeat 11 nil))
