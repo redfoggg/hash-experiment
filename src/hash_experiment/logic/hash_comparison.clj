@@ -10,13 +10,30 @@
 (def trials 10)
 (def alpha-range (range 0.1 1.0 0.1))
 
-(def x (range 0.1 1.0 0.1))                      ;; valores no eixo X
-(def y (map #(* % %) x))                         ;; exemplo: y = x^2
+(defn average-accesses [insert-fn search-fn alpha]
+  (let [n (int (* alpha m))]
+    (->> (range trials)
+         (map (fn [_]
+                (let [keys (repeatedly n #(rand-int 10000))
+                      table (reduce insert-fn (insert-fn nil m) keys)
+                      accesses (map #(-> (search-fn table % m) :accesses) keys)]
+                  (/ (reduce + accesses) n))))
+         (reduce +)
+         (/ trials))))
 
-(def chart (charts/xy-plot x y
-                           :title "Exemplo y = x^2"
-                           :x-label "Alpha"
-                           :y-label "Resultado"))
+(def xs alpha-range)
+
+(def ys-computed (map #(average-accesses logic.computed-chaining/insert logic.computed-chaining/search %) xs))
+(def ys-explicit (map #(average-accesses logic.explicit-chaining/insert logic.explicit-chaining/search %) xs))
+(def ys-double   (map #(average-accesses logic.double-hashing/insert logic.double-hashing/search %) xs))
+
+(def chart (charts/xy-plot xs ys-computed
+                           :title "Average Accesses vs Load Factor"
+                           :x-label "Load Factor (α)"
+                           :y-label "Average Accesses"))
+
+(charts/add-lines chart xs ys-explicit :series-label "Explicit Chaining")
+(charts/add-lines chart xs ys-double   :series-label "Double Hashing")
+(charts/add-lines chart xs ys-computed :series-label "Computed Chaining")
 
 (icore/view chart)
-
