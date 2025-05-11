@@ -8,7 +8,7 @@
   [k m]
   (mod (max 1 (quot k m)) m))
 
-(defn insert 
+(defn insert
   [table k]
   (let [m            (count table)
         index        (hashing k m)
@@ -38,16 +38,16 @@
     (loop [current-index initial-idx
            attempts      1]
       (cond
-        (> attempts max-attempts)  ; Percorreu toda a tabela
+        (> attempts max-attempts)
         nil
-        
-        (nil? (nth table current-index))  ; Encontrou posição vazia
+
+        (nil? (nth table current-index))
         nil
-        
-        (= (nth table current-index) k)  ; Encontrou a chave
+
+        (= (nth table current-index) k)
         k
-        
-        :else  ; Continua procurando
+
+        :else
         (recur (mod (+ current-index jump) m)
                (inc attempts))))))
 
