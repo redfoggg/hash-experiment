@@ -1,44 +1,14 @@
 # hash-experiment
 
-FIXME: description
+Foi implementado corretamente somente os algoritmos da primeira questão.
+Os algoritmos da segunda questão foram implementados, mas não estão funcionando corretamente.
 
-## Installation
+Um ponto de atenção na questão 1 foi que não consegui no até o final do prazo plotar corretamente os dados de teste de massa com o computed hash e o double hashing.
+Por algum motivo ao testar em massa eles não retornam os valores corretos, porém testando caso a caso como no arquivo core.clj dá para ver seu correto funcionamento.
 
-Download from http://example.com/FIXME.
+Abaixo colarei um gráfico com resultado do teste, note que somente o explicit hashing está aparecendo corretamente no gráfico.
 
-## Usage
+![image](image.png)
 
-FIXME: explanation
+No arquivo core.clj existe teste dos três algoritmos, todos retirados ou do slide ou dos livros textos citados como no caso do compputed chaining.
 
-    $ java -jar hash-experiment-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2025 FIXME
-
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
