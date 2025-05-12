@@ -1,5 +1,9 @@
 (ns hash-experiment.logic.double-hashing)
 
+(defn create-table
+  [m]
+  (vec (repeat m nil)))
+
 (defn hashing
   [k m]
   (mod k m))
@@ -9,9 +13,8 @@
   (mod (max 1 (quot k m)) m))
 
 (defn insert
-  [table k]
-  (let [m            (count table)
-        index        (hashing k m)
+  [table k m]
+  (let [index        (hashing k m)
         jump         (hashing-2 k m)
         max-attempts m]
     (loop [current-index index
@@ -19,7 +22,7 @@
            tb            table]
       (cond
         (> accesses max-attempts)
-        (throw (Exception. "Tabela hash cheia"))
+        (throw (Exception. "Table is full"))
 
         (nil? (nth tb current-index))
         (assoc tb current-index k)
@@ -30,9 +33,8 @@
                tb)))))
 
 (defn search
-  [table k]
-  (let [m            (count table)
-        initial-idx  (hashing k m)
+  [table k m]
+  (let [initial-idx  (hashing k m)
         jump         (hashing-2 k m)
         max-attempts m]
     (loop [current-index initial-idx
@@ -51,6 +53,3 @@
         (recur (mod (+ current-index jump) m)
                (inc accesses))))))
 
-(defn create-table
-  [m]
-  (vec (repeat m nil)))

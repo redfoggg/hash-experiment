@@ -17,17 +17,16 @@
   (= (hashing k m) index))
 
 (defn insert
-  [table k]
-  (let [m             (count table)
-        initial-index (hashing k m)]
+  [table k m]
+  (let [initial-index (hashing k m)]
     (loop [index         initial-index
            attempts      0
            current-table table
            current-increment nil]
       (let [elem (nth current-table index)]
         (cond
-          ; (= (:value elem) k)
-          ; (throw (Exception. "Duplicate"))
+          (= (:value elem) k)
+          (throw (Exception. "Duplicate"))
 
           (>= attempts m)
           (throw (Exception. "Table is full"))
@@ -46,9 +45,8 @@
                    increment)))))))
 
 (defn search
-  [table k]
-  (let [m (count table)
-        initial-index (hashing k m)]
+  [table k m]
+  (let [initial-index (hashing k m)]
     (loop [index initial-index
            increment nil
            elem      (nth table initial-index)
@@ -64,7 +62,7 @@
         {:accesses accesses :value k}
 
         (not (nil? increment))
-        (let [new-increment (+ index increment)] 
+        (let [new-increment (+ index increment)]
           (recur new-increment new-increment (nth table new-increment) (inc accesses)))
 
         :else

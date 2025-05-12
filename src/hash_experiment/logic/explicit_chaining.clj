@@ -5,17 +5,15 @@
   (mod k m))
 
 (defn insert
-  [table k]
-  (let [m              (count table)
-        index          (hashing k m)
+  [table k m]
+  (let [index          (hashing k m)
         bucket         (nth table index)
         updated-bucket (conj bucket k)]
     (assoc table index updated-bucket)))
 
 (defn search
-  [table k]
-  (let [m      (count table)
-        index  (hashing k m)
+  [table k m]
+  (let [index  (hashing k m)
         bucket (nth table index)]
     (loop [items bucket
            accesses 1]
