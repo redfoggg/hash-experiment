@@ -26,8 +26,8 @@
            current-increment nil]
       (let [elem (nth current-table index)]
         (cond
-          (= (:value elem) k)
-          (throw (Exception. "Duplicate"))
+          ; (= (:value elem) k)
+          ; (throw (Exception. "Duplicate"))
 
           (>= attempts m)
           (throw (Exception. "Table is full"))

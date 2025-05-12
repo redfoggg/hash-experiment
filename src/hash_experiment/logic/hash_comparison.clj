@@ -73,3 +73,10 @@
 
 (icore/view success-chart)
 (icore/view failure-chart)
+
+; (println "Computed Chaining success sample:" (take 3 success-computed))
+;
+; (println "Computed Chaining success sample:" (take 3 success-computed))
+; (println "Explicit Chaining success sample:" (take 3 success-explicit))
+; (println "Double Hashing success sample:" (take 3 success-double))
+
