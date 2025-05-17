@@ -19,17 +19,17 @@
 (defn insert
   [table k m]
   (let [initial-index (hashing k m)]
-    (loop [index         initial-index
-           attempts      0
-           current-table table
+    (loop [index             initial-index
+           attempts          0
+           current-table     table
            current-increment nil]
       (let [elem (nth current-table index)]
         (cond
           (= (:value elem) k)
-          (throw (Exception. "Duplicate"))
+          current-table
 
           (>= attempts m)
-          (throw (Exception. "Table is full"))
+          current-table
 
           (nil? elem)
           (update-in current-table [index] assoc :value k :next nil)

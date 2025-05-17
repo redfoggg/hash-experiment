@@ -19,18 +19,18 @@
         max-attempts m]
     (loop [current-index index
            accesses      1
-           tb            table]
+           current-table table]
       (cond
         (> accesses max-attempts)
-        (throw (Exception. "Table is full"))
+        current-table
 
-        (nil? (nth tb current-index))
-        (assoc tb current-index k)
+        (nil? (nth current-table current-index))
+        (assoc current-table current-index k)
 
         :else
         (recur (mod (+ current-index jump) m)
                (inc accesses)
-               tb)))))
+               current-table)))))
 
 (defn search
   [table k m]
