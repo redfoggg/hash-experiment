@@ -14,24 +14,29 @@
 
 (defn unique-random-numbers
   [n]
-  (let [a-set (set (take n (repeatedly #(rand-int range-max))))]
+  (let [a-set (set (take n (repeatedly #(rand-int n))))]
     (concat a-set (set/difference (set (take n (range)))
                                   a-set))))
+
+(defn explicit-chaining-insert-fn
+  [table k m keys]
+  (reduce (fn [table k] (logic.explicit-chaining/insert table k m) (logic.explicit-chaining/create-table m))
+          table
+          keys))
 
 (defn average-success-accesses
   [create-fn insert-fn search-fn alpha]
   (let [n (int (* alpha m))]
     (->
-     (->>
-      (range trials)
-      (map (fn [_]
-             (let [keys             (unique-random-numbers n)
-                   table            (reduce (fn [table k] (insert-fn table k m)) (create-fn m) keys)
-                   success-accesses (map #(-> (search-fn table % m) :accesses) keys)]
-               {:success (/ (reduce + success-accesses) n)})))
-      (reduce (fn [acc x]
-                {:success (+ (:success acc) (:success x))})
-              {:success 0}))
+     (->> (range trials)
+          (map (fn [_]
+                 (let [keys             (take m (unique-random-numbers n))
+                       table            (reduce (fn [table k] (insert-fn table k m)) (create-fn m) keys)
+                       success-accesses (map #(-> (search-fn table % m) :accesses) keys)]
+                   {:success (/ (reduce + success-accesses) n)})))
+          (reduce (fn [acc x]
+                    {:success (+ (:success acc) (:success x))})
+                  {:success 0}))
      (update :success #(/ % trials)))))
 
 (def results-computed (map #(average-success-accesses

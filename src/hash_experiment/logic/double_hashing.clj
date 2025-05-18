@@ -21,6 +21,9 @@
            accesses      1
            current-table table]
       (cond
+        (>= current-index m)
+        current-table
+
         (> accesses max-attempts)
         current-table
 

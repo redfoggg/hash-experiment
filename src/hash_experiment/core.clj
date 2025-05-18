@@ -1,9 +1,11 @@
 (ns hash-experiment.core
   (:gen-class)
   (:require
+   [clojure.set :as set]
    [hash-experiment.logic.computed-chaining :as logic.computed-chaining]
    [hash-experiment.logic.double-hashing :as logic.double-hashing]
-   [hash-experiment.logic.explicit-chaining :as logic.explicit-chaining]))
+   [hash-experiment.logic.explicit-chaining :as logic.explicit-chaining]
+   [clojure.pprint :refer [pprint]]))
 
 (def test-table (logic.explicit-chaining/create-table 11))
 (def test-table-2 (logic.double-hashing/create-table 11))
@@ -43,16 +45,45 @@ double-hashing-table
 (logic.double-hashing/search double-hashing-table 29 11)
 (logic.double-hashing/search double-hashing-table 40 11)
 
-(def computed-chaining-table (-> test-table-3
-                                 (logic.computed-chaining/insert 27 7)
-                                 (logic.computed-chaining/insert 18 7)
-                                 (logic.computed-chaining/insert 29 7)
-                                 (logic.computed-chaining/insert 28 7)
-                                 (logic.computed-chaining/insert 39 7)
-                                 (logic.computed-chaining/insert 13 7)
-                                 (logic.computed-chaining/insert 16 7)))
+(def computed-chaining-table
+  (reduce (fn [table key]
+            (logic.computed-chaining/insert table key 7))
+          test-table-3
+          [27 18 29 28 39 13 16]))
 computed-chaining-table
 (logic.computed-chaining/search computed-chaining-table 3 7)
 (logic.computed-chaining/search computed-chaining-table 29 7)
 (logic.computed-chaining/search computed-chaining-table 28 7)
+
+(defn unique-random-numbers [n]
+  (let [a-set (set (take n (repeatedly #(rand-int n))))]
+    (concat a-set (set/difference (set (take n (range)))
+                                  a-set))))
+
+
+(defn average-search-accesses [table keys m search-fn]
+  (let [search-results (map #(search-fn table % m) keys)
+        accesses-list (map :accesses search-results)
+        total-accesses (reduce + accesses-list)
+        avg-accesses (/ total-accesses (count keys))]
+    avg-accesses))
+
+
+(def computed-chaining-table-2
+  (let [table (logic.computed-chaining/create-table 997)
+        keys (vec (take 997 (unique-random-numbers 50000)))
+        process-each-key (fn [keys]
+                           (loop [remaining-keys keys
+                                  current-table table]
+                             (if (empty? remaining-keys)
+                               current-table
+                               (let [key (first remaining-keys)
+                                     safe-table (if (vector? current-table) 
+                                                 current-table 
+                                                 (vec (repeat 997 nil)))
+                                     result (logic.computed-chaining/insert safe-table key 997)]
+                                 (recur (rest remaining-keys) result)))))]
+    (average-search-accesses (process-each-key keys) keys 997 logic.computed-chaining/search+)))
+
+computed-chaining-table-2
 
