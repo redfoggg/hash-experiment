@@ -24,7 +24,7 @@
     (->
      (->> (range trials)
           (map (fn [_]
-                 (let [keys             (take m (unique-random-numbers n))
+                 (let [keys             (take n (unique-random-numbers n))
                        table            (reduce (fn [table k] (insert-fn table k m)) (create-fn m) keys)
                        success-accesses (map #(-> (search-fn table % m) :accesses) keys)]
                    {:success (/ (reduce + success-accesses) n)})))
@@ -33,7 +33,21 @@
                   {:success 0}))
      (update :success #(/ % trials)))))
 
-(def results-computed (map #(average-success-accesses
+(defn average-success-accesses-computed-chaining
+  [create-fn insert-fn search-fn alpha]
+  (let [n (int (* alpha m))
+        keys (take n (unique-random-numbers n))
+        table (loop [remaining-keys keys
+                     current-table (create-fn m)]
+                (if (empty? remaining-keys)
+                  current-table
+                  (let [key (first remaining-keys)
+                        result (insert-fn current-table key m)]
+                    (recur (rest remaining-keys) result))))
+        accesses (map #(-> (search-fn table % m) :accesses) keys)]
+    {:success (/ (reduce + accesses) n)}))
+
+(def results-computed (map #(average-success-accesses-computed-chaining
                              logic.computed-chaining/create-table
                              logic.computed-chaining/insert
                              logic.computed-chaining/search %) alpha-range))
@@ -47,6 +61,8 @@
                            logic.double-hashing/create-table
                            logic.double-hashing/insert
                            logic.double-hashing/search %) alpha-range))
+
+results-computed
 
 (def success-computed (map :success results-computed))
 (def success-explicit (map :success results-explicit))
