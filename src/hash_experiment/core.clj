@@ -69,23 +69,15 @@ computed-chaining-table
 
 (def computed-chaining-table-2
   (let [table (logic.computed-chaining/create-table 997)
-        keys (vec (take 997 (unique-random-numbers 50000)))]
-    (loop [remaining-keys keys
-           current-table table]
-      (if (empty? remaining-keys)
-        current-table
-        (let [key (first remaining-keys)
-              result (logic.computed-chaining/insert current-table key 997)]
-          (recur (rest remaining-keys) result))))))
+        keys (vec (take 997 (unique-random-numbers 50000)))
+        computed-table (loop [remaining-keys keys
+                              current-table table]
+                         (if (empty? remaining-keys)
+                           current-table
+                           (let [key (first remaining-keys)
+                                 result (logic.computed-chaining/insert current-table key 997)]
+                             (recur (rest remaining-keys) result))))]
+    (search-accesses computed-table keys 997)))
 
-computed-chaining-table-2
-(filter #(not (nil? %)) computed-chaining-table-2)
-
-(def computed-accesses
-  (let [keys (vec (take 997 (unique-random-numbers 50000)))
-        table computed-chaining-table-2]
-    (search-accesses table keys 997)))
-
-computed-accesses
-
+(/ (reduce + computed-chaining-table-2) (count computed-chaining-table-2))
 
