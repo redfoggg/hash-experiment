@@ -10,19 +10,13 @@
 (def m 997)
 (def trials 10)
 (def alpha-range (range 0.1 1.0 0.1))
-(def range-max 10000)
+(def range-max 50000)
 
 (defn unique-random-numbers
   [n]
-  (let [a-set (set (take n (repeatedly #(rand-int n))))]
+  (let [a-set (set (take n (repeatedly #(rand-int range-max))))]
     (concat a-set (set/difference (set (take n (range)))
                                   a-set))))
-
-(defn explicit-chaining-insert-fn
-  [table k m keys]
-  (reduce (fn [table k] (logic.explicit-chaining/insert table k m) (logic.explicit-chaining/create-table m))
-          table
-          keys))
 
 (defn average-success-accesses
   [create-fn insert-fn search-fn alpha]
@@ -58,7 +52,7 @@
 (def success-explicit (map :success results-explicit))
 (def success-double (map :success results-double))
 
-(def success-chart (charts/xy-plot alpha-range success-computed
+(def success-chart (charts/xy-plot alpha-range success-explicit
                                    :title "Successful Search: Average Accesses vs Load Factor"
                                    :x-label "Load Factor (α)"
                                    :y-label "Average Accesses"
