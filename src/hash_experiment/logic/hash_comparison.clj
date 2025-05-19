@@ -34,23 +34,29 @@
      (update :success #(/ % trials)))))
 
 (defn average-success-accesses-computed-chaining
-  [create-fn insert-fn search-fn alpha]
+  [alpha]
   (let [n (int (* alpha m))
-        keys (take n (unique-random-numbers n))
+        keys (vec (take n (unique-random-numbers range-max)))
         table (loop [remaining-keys keys
-                     current-table (create-fn m)]
+                     current-table (logic.computed-chaining/create-table m)]
                 (if (empty? remaining-keys)
                   current-table
                   (let [key (first remaining-keys)
-                        result (insert-fn current-table key m)]
+                        result (logic.computed-chaining/insert current-table key m)]
                     (recur (rest remaining-keys) result))))
-        accesses (map #(-> (search-fn table % m) :accesses) keys)]
-    {:success (/ (reduce + accesses) n)}))
+        accesses (map (fn [key]
+                        (let [result (logic.computed-chaining/search table key m)]
+                          (:accesses result)))
+                      keys)]
+    (if (seq accesses)
+      {:success (/ (reduce + accesses) (count accesses))}
+      {:success 0})))
+(def results-computed (mapv average-success-accesses-computed-chaining alpha-range))
 
-(def results-computed (map #(average-success-accesses-computed-chaining
-                             logic.computed-chaining/create-table
-                             logic.computed-chaining/insert
-                             logic.computed-chaining/search %) alpha-range))
+#_(def results-computed (map #(average-success-accesses-computed-chaining
+                               logic.computed-chaining/create-table
+                               logic.computed-chaining/insert
+                               logic.computed-chaining/search %) alpha-range))
 
 (def results-explicit (map #(average-success-accesses
                              logic.explicit-chaining/create-table
