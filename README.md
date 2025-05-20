@@ -12,3 +12,6 @@ Abaixo colarei um gráfico com resultado do teste, note que somente o explicit h
 
 No arquivo core.clj existe teste dos três algoritmos, todos retirados ou do slide ou dos livros textos citados como no caso do compputed chaining.
 
+# O que foi feito após tempo extra
+Consegui resolver o problema do gráfico parcialmente, o computed-chaining ainda contém alguns pequenos problemas que geram alguns picos, mas no geral o experimento seguiu o teoríco, já a questão 2 não consegui implementar a tempo.
+
