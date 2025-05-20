@@ -51,7 +51,35 @@
     (if (seq accesses)
       {:success (/ (reduce + accesses) (count accesses))}
       {:success 0})))
-(def results-computed (mapv average-success-accesses-computed-chaining alpha-range))
+
+(defn average-success-accesses-computed-chaining-trials
+  [alpha]
+  (let [results-from-each-trial (for [_ (range trials)]
+                                  (let [n (int (* alpha m))]
+                                    (if (zero? n)
+                                      0.0
+                                      (let [keys (take n (unique-random-numbers range-max))
+                                            table (loop [remaining-keys keys
+                                                         current-table (logic.computed-chaining/create-table m)]
+                                                    (if (empty? remaining-keys)
+                                                      current-table
+                                                      (let [key-to-insert (first remaining-keys)
+                                                            updated-table (logic.computed-chaining/insert current-table key-to-insert m)]
+                                                        (recur (rest remaining-keys) updated-table))))
+                                            accesses-list (map (fn [key-to-search]
+                                                                 (let [search-result (logic.computed-chaining/search table key-to-search m)]
+                                                                   (if (and search-result (contains? search-result :accesses))
+                                                                     (:accesses search-result)
+                                                                     m)))
+                                                               keys)]
+                                        (if (seq accesses-list)
+                                          (double (/ (reduce + 0 accesses-list) (count accesses-list)))
+                                          0.0)))))]
+    (if (seq results-from-each-trial)
+      {:success (double (/ (reduce + 0.0 results-from-each-trial) (count results-from-each-trial)))}
+      {:success 0.0})))
+
+(def results-computed (mapv average-success-accesses-computed-chaining-trials alpha-range))
 
 #_(def results-computed (map #(average-success-accesses-computed-chaining
                                logic.computed-chaining/create-table
