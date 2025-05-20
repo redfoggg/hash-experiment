@@ -67,9 +67,15 @@
 
         (not (nil? increment))
         (let [new-increment (+ index increment)]
-          (recur new-increment new-increment (nth table new-increment) (inc accesses)))
+          (if (<= new-increment m)
+            (recur new-increment new-increment (nth table new-increment) (inc accesses))
+            {:accesses accesses :value nil}))
+
+        (:next elem)
+        (let [increment (+ index (:next elem))]
+          (if (<= increment m)
+            (recur increment increment (nth table increment) (inc accesses))
+            {:accesses accesses :value nil}))
 
         :else
-        (let [increment (+ index (:next elem))
-              new-elem  (nth table increment)]
-          (recur increment increment new-elem (inc accesses)))))))
+        {:accesses accesses :value nil}))))

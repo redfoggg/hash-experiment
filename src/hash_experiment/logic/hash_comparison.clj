@@ -68,8 +68,6 @@
                            logic.double-hashing/insert
                            logic.double-hashing/search %) alpha-range))
 
-results-computed
-
 (def success-computed (map :success results-computed))
 (def success-explicit (map :success results-explicit))
 (def success-double (map :success results-double))
